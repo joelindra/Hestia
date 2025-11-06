@@ -1,108 +1,69 @@
-# FTP Login Destroyer 2.0
+## FTP Login Destroyer 2.0
 
-![Python](https://img.shields.io/badge/python-3.8%2B-blue)
+Rich-powered, high-visibility FTP anonymous-login scanner with a modern live dashboard, event feed, and HTML reporting.
 
-An advanced FTP security scanning tool designed to identify vulnerable FTP servers with weak authentication. The tool tests anonymous login capability and provides detailed reports on successful connections.
+### Highlights
+- **Rich TUI**: Live dashboard with animated progress, split layout, and color-coded panels
+- **Event Feed**: Real-time log of successes and failures while scanning
+- **Parallel Scanning**: Fast execution using a thread pool
+- **Smart Stats**: Success rate, current speed, averages, and ETA
+- **Reports**: Auto-generated HTML report and a plain list of vulnerable targets
 
-## 🔍 Features
+### Demo (TUI)
+Add a short screen recording or gif here.
 
-- **Multi-threaded scanning**: Test multiple targets concurrently for efficient scanning
-- **Anonymous FTP login detection**: Identify servers allowing anonymous access
-- **Rich interactive UI**: Beautiful terminal interface with real-time statistics
-- **Comprehensive reporting**: Detailed HTML reports with server information
-- **File browsing capabilities**: View sample files on vulnerable servers
-- **Robust error handling**: Graceful handling of connection issues
-- **Progress tracking**: Real-time progress with estimated completion time
-
-## 📋 Requirements
-
-- Python 3.8 or higher
-- Required Python packages:
-  ```
-  rich>=10.9.0
-  ```
-
-## 🚀 Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/joelindra/fdestroy.git
-cd Fdestroy
-
-# Install dependencies
-pip install -r requirements.txt
+```
+┌───────────────── FTP Scan Progress ─────────────────┐
+│             Scanning targets... (live)              │
+└─────────────────────────────────────────────────────┘
 ```
 
-## 💻 Usage
-
-### Basic Usage
+### Usage
 
 ```bash
-# Scan a single target
-python fdestroy.py -t example.com
-
-# Scan multiple targets from a file
-python festroy.py -l targets.txt
+python main.py -t 1.2.3.4
+python main.py -l targets.txt -w 50 --timeout 4 -o vuln.txt
 ```
 
-### Command Line Options
+#### Options
+- `-t, --target`           Scan a single host (hostname or IP)
+- `-l, --list`             Scan a list of hosts (one per line)
+- `-w, --workers`          Number of concurrent workers (default: 20)
+- `-o, --output`           Output file for vulnerable hosts (default: vuln.txt)
+- `--timeout`              Connection timeout in seconds (default: 3)
 
-| Option | Description |
-|--------|-------------|
-| `-t, --target` | Single target hostname or IP |
-| `-l, --list` | File containing target list (one per line) |
-| `-w, --workers` | Number of concurrent workers (default: 20) |
-| `-o, --output` | Output file for vulnerable targets (default: vuln.txt) |
-| `--timeout` | Connection timeout in seconds (default: 3) |
+### Output
+- `vuln.txt`: Plaintext list of hosts with anonymous FTP access
+- `ftp_scan_report_YYYYMMDD_HHMMSS.html`: Detailed HTML report containing:
+  - Stats summary (total, success, failed, success-rate)
+  - Successful hosts with server banner, system type, initial directory
+  - Sample file listings (first few entries when available)
+  - Failed hosts with error reasons
 
-## 📊 Output
+### Features in Detail
+- **Live Layout**: Header banner, progress + stats, and a split footer showing current target and a live event log
+- **Event Log**: Shows timestamps, host, and colored result (OK/FAIL) as targets complete
+- **Improved Progress Bar**: Spinner + bar + M-of-N + elapsed + ETA
+- **Graceful Interrupt**: Ctrl+C saves partial results and generates a report
 
-The tool generates two types of output:
-1. A text file (`vuln.txt` by default) containing vulnerable hosts
-2. An HTML report with detailed information about each scanned target
+### Example
 
-![image](https://github.com/user-attachments/assets/1b6770e8-6199-4529-a2c6-033477c6befb)
+```bash
+# Single target
+python main.py -t ftp.example.com
 
-### Sample HTML Report
-The HTML report includes:
-- Scan statistics
-- Details of successful connections
-- Banner information
-- System type
-- Initial directory
-- Sample files (if available)
-- Failed connection attempts with error details
+# From file with 50 workers
+python main.py -l targets.txt -w 50 -o found.txt --timeout 5
+```
 
-## ⚠️ Legal Disclaimer
+### Notes
+- Prefixes like `http://` and `https://` are stripped automatically from targets
+- Only the first few directory entries are sampled to keep the UI and reports readable
 
-This tool is provided for educational and ethical security research purposes only. Usage of FTP Login Destroyer for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state, and federal laws. The developers assume no liability and are not responsible for any misuse or damage caused by this program.
+### Ethics & Legal
+This tool is intended for defensive research, auditing, and education. Only scan targets you own or have explicit permission to test. You are solely responsible for your use of this tool.
 
-## 🔒 Security Recommendations
+### License
+MIT
 
-If your server is found vulnerable by this tool, consider implementing the following security measures:
 
-1. Disable anonymous FTP access if not required
-2. Implement strong password policies
-3. Use FTP over SSL/TLS (FTPS) or SFTP instead of plain FTP
-4. Configure proper access controls and file permissions
-5. Implement IP-based access restrictions
-6. Enable logging and monitoring for FTP services
-
-## 🛠️ Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📜 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🙏 Acknowledgments
-
-- [Rich](https://github.com/Textualize/rich) - Beautiful terminal formatting
-- Security researchers who contributed to FTP vulnerability research
